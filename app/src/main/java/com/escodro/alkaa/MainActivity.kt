@@ -10,7 +10,7 @@ import com.escodro.shared.MainView
 /**
  * Main Alkaa Activity.
  */
-internal class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

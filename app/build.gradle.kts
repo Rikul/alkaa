@@ -80,6 +80,9 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
     implementation(libs.koin.core)
+
+    androidTestImplementation(libs.test.junit4.android)
+    debugImplementation(libs.test.manifest)
 }
 
 fun readProperties(propertiesFile: File) = Properties().apply {
