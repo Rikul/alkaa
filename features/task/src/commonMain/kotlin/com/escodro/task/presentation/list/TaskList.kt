@@ -1,9 +1,13 @@
 package com.escodro.task.presentation.list
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -11,11 +15,14 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
@@ -35,6 +42,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.escodro.categoryapi.presentation.CategoryListViewModel
 import com.escodro.categoryapi.presentation.CategoryState
@@ -48,6 +56,7 @@ import com.escodro.resources.task_list_cd_empty_list
 import com.escodro.resources.task_list_cd_error
 import com.escodro.resources.task_list_header_empty
 import com.escodro.resources.task_list_header_error
+import com.escodro.resources.task_list_show_completed
 import com.escodro.resources.task_snackbar_button_undo
 import com.escodro.resources.task_snackbar_message_complete
 import com.escodro.task.model.TaskWithCategory
@@ -91,8 +100,9 @@ internal fun TaskListLoader(
 ) {
     val (currentCategory, onCategoryChange) = rememberSaveable { mutableStateOf<CategoryId?>(null) }
     val refreshKey: Int by rememberRefreshKey()
+    val showCompleted by taskListViewModel.showCompleted.collectAsState()
 
-    val taskViewState by remember(taskListViewModel, currentCategory, refreshKey) {
+    val taskViewState by remember(taskListViewModel, currentCategory, refreshKey, showCompleted) {
         taskListViewModel.loadTaskList(currentCategory?.value)
     }.collectAsState(initial = TaskListViewState.Loading)
 
@@ -111,6 +121,8 @@ internal fun TaskListLoader(
             refreshKey = refreshKey,
             modifier = modifier,
             onItemClick = onItemClick,
+            showCompleted = showCompleted,
+            onShowCompletedChange = taskListViewModel::setShowCompleted,
         )
     } else {
         AdaptiveTaskListScaffold(
@@ -122,6 +134,8 @@ internal fun TaskListLoader(
             onCategoryChange = onCategoryChange,
             refreshKey = refreshKey,
             modifier = modifier,
+            showCompleted = showCompleted,
+            onShowCompletedChange = taskListViewModel::setShowCompleted,
         )
     }
 }
@@ -137,6 +151,8 @@ private fun AdaptiveTaskListScaffold(
     currentCategory: CategoryId?,
     onCategoryChange: (CategoryId?) -> Unit,
     refreshKey: Int,
+    showCompleted: Boolean,
+    onShowCompletedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navigator: ThreePaneScaffoldNavigator<TaskId> =
@@ -165,6 +181,8 @@ private fun AdaptiveTaskListScaffold(
                             navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, TaskId(taskId))
                         }
                     },
+                    showCompleted = showCompleted,
+                    onShowCompletedChange = onShowCompletedChange,
                 )
             }
         },
@@ -202,6 +220,8 @@ internal fun TaskListScaffold(
     currentCategory: CategoryId?,
     onCategoryChange: (CategoryId?) -> Unit,
     refreshKey: Int,
+    showCompleted: Boolean,
+    onShowCompletedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -237,12 +257,15 @@ internal fun TaskListScaffold(
                 categoryState = categoryViewState,
                 currentCategory = currentCategory,
                 onCategoryChange = onCategoryChange,
+                showCompleted = showCompleted,
+                onShowCompletedChange = onShowCompletedChange,
             )
         },
         floatingActionButton = {
             AddFloatingButton(
                 contentDescription = stringResource(Res.string.task_cd_add_task),
                 onClick = onFabClick,
+                modifier = Modifier.testTag("add_task_fab"),
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
@@ -267,7 +290,9 @@ internal fun TaskListScaffold(
                         refreshKey = refreshKey,
                         onCheckedChange = { taskWithCategory ->
                             onTaskCheckedChange(taskWithCategory)
-                            onShowSnackbar(taskWithCategory)
+                            if (!taskWithCategory.task.isCompleted) {
+                                onShowSnackbar(taskWithCategory)
+                            }
                         },
                     )
                 }
@@ -285,13 +310,31 @@ private fun TaskFilter(
     categoryState: CategoryState,
     currentCategory: CategoryId?,
     onCategoryChange: (CategoryId?) -> Unit,
+    showCompleted: Boolean,
+    onShowCompletedChange: (Boolean) -> Unit,
 ) {
-    CategorySelection(
-        state = categoryState,
-        currentCategory = currentCategory?.value,
-        onCategoryChange = onCategoryChange,
-        contentPadding = PaddingValues(horizontal = 16.dp),
-    )
+    Column {
+        CategorySelection(
+            state = categoryState,
+            currentCategory = currentCategory?.value,
+            onCategoryChange = onCategoryChange,
+            contentPadding = PaddingValues(horizontal = 16.dp),
+        )
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(Res.string.task_list_show_completed),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Switch(
+                checked = showCompleted,
+                onCheckedChange = onShowCompletedChange,
+            )
+        }
+    }
 }
 
 @Composable
