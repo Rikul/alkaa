@@ -7,6 +7,7 @@ import com.escodro.domain.usecase.taskwithcategory.LoadCompletedTasks
 import com.escodro.domain.usecase.taskwithcategory.LoadUncompletedTasks
 import com.escodro.task.mapper.TaskWithCategoryMapper
 import com.escodro.task.model.TaskWithCategory
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +36,7 @@ internal class TaskListViewModel(
         _showCompleted.value = show
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun loadTaskList(categoryId: Long? = null): Flow<TaskListViewState> =
         _showCompleted.flatMapLatest { showCompleted ->
             val baseFlow = loadAllTasksUseCase(categoryId = categoryId)

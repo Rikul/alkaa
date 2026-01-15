@@ -86,6 +86,8 @@ internal class TaskListTest : AlkaaTest() {
                     currentCategory = null,
                     onCategoryChange = {},
                     refreshKey = 0,
+                    showCompleted = false,
+                    onShowCompletedChange = {},
                     modifier = Modifier,
                 )
             }

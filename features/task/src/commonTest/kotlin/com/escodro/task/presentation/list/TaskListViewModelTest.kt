@@ -6,6 +6,7 @@ import com.escodro.task.mapper.CategoryMapper
 import com.escodro.task.mapper.TaskMapper
 import com.escodro.task.mapper.TaskWithCategoryMapper
 import com.escodro.task.presentation.fake.FAKE_VIEW_TASK_WITH_CATEGORY
+import com.escodro.task.presentation.fake.LoadCompletedTasksFake
 import com.escodro.task.presentation.fake.LoadUncompletedTasksFake
 import com.escodro.task.presentation.fake.UpdateTaskStatusFake
 import com.escodro.test.rule.CoroutinesTestDispatcher
@@ -21,12 +22,15 @@ internal class TaskListViewModelTest : CoroutinesTestDispatcher by CoroutinesTes
 
     private val loadUncompletedTasks = LoadUncompletedTasksFake()
 
+    private val loadCompletedTasks = LoadCompletedTasksFake()
+
     private val updateTaskStatus = UpdateTaskStatusFake()
 
     private val mapper = TaskWithCategoryMapper(TaskMapper(AlarmIntervalMapper()), CategoryMapper())
 
     private val viewModel = TaskListViewModel(
         loadAllTasksUseCase = loadUncompletedTasks,
+        loadCompletedTasksUseCase = loadCompletedTasks,
         updateTaskStatusUseCase = updateTaskStatus,
         applicationScope = AppCoroutineScope(context = testDispatcher()),
         taskWithCategoryMapper = mapper,

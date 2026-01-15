@@ -47,6 +47,7 @@ import com.escodro.domain.usecase.task.implementation.UpdateTaskStatusImpl
 import com.escodro.domain.usecase.task.implementation.UpdateTaskTitleImpl
 import com.escodro.domain.usecase.taskwithcategory.LoadCompletedTasks
 import com.escodro.domain.usecase.taskwithcategory.LoadUncompletedTasks
+import com.escodro.domain.usecase.taskwithcategory.implementation.LoadCompletedTasksImpl
 import com.escodro.domain.usecase.taskwithcategory.implementation.LoadUncompletedTasksImpl
 import com.escodro.domain.usecase.tracker.LoadCompletedTasksByPeriod
 import com.escodro.domain.usecase.tracker.implementation.LoadCompletedTasksByPeriodImpl
@@ -102,7 +103,7 @@ val domainModule = module {
     factoryOf(::SearchTasksByNameImpl) bind SearchTasksByName::class
 
     // Task With Category Use Cases
-    factoryOf(::LoadCompletedTasks)
+    factoryOf(::LoadCompletedTasksImpl) bind LoadCompletedTasks::class
     factoryOf(::LoadUncompletedTasksImpl) bind LoadUncompletedTasks::class
 
     // Alarm Use Cases
