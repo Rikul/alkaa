@@ -1,5 +1,5 @@
 include(":app")
-//include(":desktop-app")
+include(":desktop-app")
 include(":features:alarm-api")
 include(":features:alarm")
 include(":features:task")
