@@ -44,3 +44,4 @@ freeline_project_description.json
 .kotlin
 CLAUDE.md 
 GEMINI.md 
+*.preferences_pb 

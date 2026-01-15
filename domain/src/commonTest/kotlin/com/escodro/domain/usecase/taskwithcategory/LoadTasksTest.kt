@@ -5,6 +5,7 @@ import com.escodro.domain.model.Task
 import com.escodro.domain.usecase.fake.CategoryRepositoryFake
 import com.escodro.domain.usecase.fake.TaskRepositoryFake
 import com.escodro.domain.usecase.fake.TaskWithCategoryRepositoryFake
+import com.escodro.domain.usecase.taskwithcategory.implementation.LoadCompletedTasksImpl
 import com.escodro.domain.usecase.taskwithcategory.implementation.LoadUncompletedTasksImpl
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -24,7 +25,7 @@ internal class LoadTasksTest {
     private val taskWithCategoryRepository =
         TaskWithCategoryRepositoryFake(taskRepository, categoryRepository)
 
-    private val loadCompletedTasksUseCase = LoadCompletedTasks(taskWithCategoryRepository)
+    private val loadCompletedTasksUseCase = LoadCompletedTasksImpl(taskWithCategoryRepository)
 
     private val loadUncompletedTasksUseCase = LoadUncompletedTasksImpl(taskWithCategoryRepository)
 
