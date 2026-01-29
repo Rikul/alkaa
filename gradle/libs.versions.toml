@@ -25,13 +25,13 @@ kotlinx_collections_immutable = "0.4.0"
 kotlinx_datetime = "0.7.1"
 
 # AndroidX
-activity = "1.12.2"
+activity = "1.12.3"
 core = "1.17.0"
 appcompat = "1.7.1"
 corektx = "1.17.0"
 datastore = "1.2.0"
 glance = "1.1.1"
-workmanager = "2.11.0"
+workmanager = "2.11.1"
 lifecycle_viewmodel = "2.9.6"
 lifecycle_runtime = "2.10.0"
 
@@ -64,9 +64,9 @@ multiplatform_paths = "0.2.2"
 # Test
 test_junit = "4.13.2"
 test_uiautomator = "2.3.0"
-test_junit4_android = "1.10.1"
-test_manifest = "1.10.1"
-test_work = "2.11.0"
+test_junit4_android = "1.10.2"
+test_manifest = "1.10.2"
+test_work = "2.11.1"
 test_robolectric = "4.16.1"
 
 # Quality
